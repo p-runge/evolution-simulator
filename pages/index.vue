@@ -1,46 +1,82 @@
 <template>
-  <div class="container">
-    <div>
-      <Logo />
-      <h1 class="title">evolution-simulator</h1>
-      <div class="links">
-        <a
-          href="https://nuxtjs.org/"
-          target="_blank"
-          rel="noopener noreferrer"
-          class="button--green"
+  <div>
+    <b-button @click="readNetwork">Read</b-button>
+    <b-row class="data-wrapper">
+      <template v-if="network">
+        <b-col
+          v-for="(neurons, index) in Object.values(network.toJSON())"
+          :key="index"
+          cols="4"
         >
-          Documentation
-        </a>
-        <a
-          href="https://github.com/nuxt/nuxt.js"
-          target="_blank"
-          rel="noopener noreferrer"
-          class="button--grey"
-        >
-          GitHub
-        </a>
-      </div>
-    </div>
+          <pre><code>{{ neurons }}</code></pre>
+        </b-col>
+      </template>
+    </b-row>
   </div>
 </template>
 
 <script lang="ts">
 import Vue from 'vue'
+import { MotorNeuron, Neuron, SensoryNeuron, Network } from 'neunet'
 
-export default Vue.extend({})
+export default Vue.extend({
+  data() {
+    return {
+      network: undefined as Network | undefined,
+    }
+  },
+  created() {
+    const sensoryNeurons = [
+      new Neuron({
+        _inputFunction: () => 0,
+      } as SensoryNeuron),
+      new Neuron({
+        _inputFunction: () => 0.5,
+      } as SensoryNeuron),
+      new Neuron({
+        _inputFunction: () => 1,
+      } as SensoryNeuron),
+    ]
+
+    const motorNeurons = [
+      new Neuron({
+        _outputFunction: (neuron: Neuron) => {
+          console.log('trigger MOTOR', neuron)
+        },
+      } as MotorNeuron),
+      new Neuron({
+        _outputFunction: (neuron: Neuron) => {
+          console.log('trigger MOTOR', neuron)
+        },
+      } as MotorNeuron),
+      new Neuron({
+        _outputFunction: (neuron: Neuron) => {
+          console.log('trigger MOTOR', neuron)
+        },
+      } as MotorNeuron),
+    ]
+
+    this.network = new Network(sensoryNeurons, motorNeurons, 3, 0.1)
+  },
+  methods: {
+    readNetwork(): void {
+      this.network?.read()
+    },
+  },
+})
 </script>
 
 <style>
-.container {
-  margin: 0 auto;
-  min-height: 100vh;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  text-align: center;
+body {
+  background-color: #272236;
 }
-
+pre {
+  color: #7d5f8e;
+}
+.data-wrapper {
+  display: flex;
+  justify-content: space-between;
+}
 .title {
   font-family: 'Quicksand', 'Source Sans Pro', -apple-system, BlinkMacSystemFont,
     'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
