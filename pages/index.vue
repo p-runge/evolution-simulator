@@ -1,17 +1,23 @@
 <template>
   <div>
-    <b-button @click="readNetwork">Read</b-button>
-    <b-row class="data-wrapper">
-      <template v-if="network">
-        <b-col
-          v-for="(neurons, index) in Object.values(network.toJSON())"
-          :key="index"
-          cols="4"
-        >
-          <pre><code>{{ neurons }}</code></pre>
-        </b-col>
-      </template>
-    </b-row>
+    <section>
+      <h2>Brain Chart</h2>
+      <network-vis :neurons="allNeurons" class="vis" />
+    </section>
+    <section>
+      <h2>Brain Data</h2>
+      <b-row class="data-wrapper">
+        <template v-if="network">
+          <b-col
+            v-for="(neurons, index) in Object.values(network.toJSON())"
+            :key="index"
+            cols="4"
+          >
+            <pre><code>{{ neurons }}</code></pre>
+          </b-col>
+        </template>
+      </b-row>
+    </section>
   </div>
 </template>
 
@@ -24,6 +30,11 @@ export default Vue.extend({
     return {
       network: undefined as Network | undefined,
     }
+  },
+  computed: {
+    allNeurons(): Neuron[] {
+      return Object.values(this.network || {}).reduce((a, b) => a.concat(b), [])
+    },
   },
   created() {
     const sensoryNeurons = [
@@ -41,22 +52,22 @@ export default Vue.extend({
     const motorNeurons = [
       new Neuron({
         _outputFunction: (neuron: Neuron) => {
-          console.log('trigger MOTOR', neuron)
+          console.log(`trigger MOTOR ${neuron.toJSON()}`)
         },
       } as MotorNeuron),
       new Neuron({
         _outputFunction: (neuron: Neuron) => {
-          console.log('trigger MOTOR', neuron)
+          console.log(`trigger MOTOR ${neuron.toJSON()}`)
         },
       } as MotorNeuron),
       new Neuron({
         _outputFunction: (neuron: Neuron) => {
-          console.log('trigger MOTOR', neuron)
+          console.log(`trigger MOTOR ${neuron.toJSON()}`)
         },
       } as MotorNeuron),
     ]
 
-    this.network = new Network(sensoryNeurons, motorNeurons, 3, 0.1)
+    this.network = new Network(sensoryNeurons, motorNeurons, 5, 0.2)
   },
   methods: {
     readNetwork(): void {
@@ -70,32 +81,18 @@ export default Vue.extend({
 body {
   background-color: #272236;
 }
+*,
 pre {
   color: #7d5f8e;
+}
+section:not(:last-child) {
+  margin-bottom: 2rem;
 }
 .data-wrapper {
   display: flex;
   justify-content: space-between;
 }
-.title {
-  font-family: 'Quicksand', 'Source Sans Pro', -apple-system, BlinkMacSystemFont,
-    'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
-  display: block;
-  font-weight: 300;
-  font-size: 100px;
-  color: #35495e;
-  letter-spacing: 1px;
-}
-
-.subtitle {
-  font-weight: 300;
-  font-size: 42px;
-  color: #526488;
-  word-spacing: 5px;
-  padding-bottom: 15px;
-}
-
-.links {
-  padding-top: 15px;
+.vis {
+  border: 1px solid #7d5f8e;
 }
 </style>
