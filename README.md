@@ -1,5 +1,9 @@
 # evolution-simulator
 
+## Dependencies
+
+This project is depending on the [neunet package](https://github.com/p-runge/neunet) which is not published to npm. So you need to download it and install it locally to make this project work.
+
 ## Build Setup
 
 ```bash
