@@ -18,7 +18,7 @@
     "bootstrap-vue": "^2.21.2",
     "core-js": "^3.9.1",
     "neunet": "file:../neunet",
-    "nuxt": "^2.15.3",
+    "nuxt": "^3.11.1",
     "uuid": "^8.3.2",
     "vis-network": "^9.1.0"
   },
